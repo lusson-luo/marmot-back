@@ -5,6 +5,7 @@ import (
 	v1 "marmot/api/v1"
 	"marmot/internal/dao"
 	"marmot/internal/model/do"
+	"marmot/internal/service"
 
 	"github.com/google/uuid"
 )
@@ -55,7 +56,7 @@ func (logic InspectionLogic) InspectAll(ctx context.Context) {
 }
 
 // 4. 加载所有巡检处理器
-func init() {
+func registerInspectors() {
 	inspections := dao.Inspection.FindAll()
 	mysqlExist := false
 	for _, inspection := range inspections {
@@ -73,4 +74,9 @@ func init() {
 		}
 		dao.Inspection.Insert(inspection)
 	}
+}
+
+func init() {
+	registerInspectors()
+	service.RegisterInspection(InspectionLogic{})
 }

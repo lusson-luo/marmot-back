@@ -26,18 +26,18 @@ type CInspection struct {
 
 // 1. 查看巡检列表
 func (c *CInspection) List(ctx context.Context, req *v1.InspectListReq) (res *[]v1.InspectListRes, err error) {
-	res, err = service.Inspection.List(ctx)
+	res, err = service.Inspection().List(ctx)
 	return
 }
 
 // 2. 巡检单项场景
 func (c *CInspection) Inspect(ctx context.Context, req *v1.InspectReq) (res *v1.InspectRes, err error) {
-	service.Inspection.Inspect(ctx, req.Id)
+	service.Inspection().Inspect(ctx, req.Id)
 	return
 }
 
 // 3. 巡检全部场景
 func (c *CInspection) InspectAll(ctx context.Context, req *v1.InspectAllReq) (res *v1.InspectAllRes, err error) {
-	service.Inspection.InspectAll(ctx)
+	service.Inspection().InspectAll(ctx)
 	return
 }
