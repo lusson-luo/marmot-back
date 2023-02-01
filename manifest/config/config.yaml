@@ -9,5 +9,17 @@ logger:
 
 database:
   default:
-    link:  "mysql:root:coding123@tcp(127.0.0.1:3306)"
+    link:   "sqlite::@file(manifest/document/sqlite/marmot.db)"
+
+inspection:
+  mysql: 
+    enabled: true
+    url: "mysql:root:coding123@tcp(127.0.0.1:3306)"
+    items:
+      - name: 创建数据库
+        cmds: 
+          - "create database test2"
+      - name: 删除数据库
+        cmds: 
+          - "drop database test2"
 
