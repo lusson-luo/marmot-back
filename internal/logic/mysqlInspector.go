@@ -2,7 +2,9 @@ package logic
 
 import (
 	"context"
+	"fmt"
 	"marmot/internal/dao"
+	"marmot/internal/model/do"
 	"marmot/internal/model/entity"
 	"time"
 
@@ -51,6 +53,7 @@ func (MysqlInspector *mysqlInspector) inspect(ctx context.Context, id int) {
 			inspection.Availability = true
 			inspection.Count++
 			for i, item := range mysqlConfig.Items {
+				startTime := gtime.NewFromTime(time.Now())
 				for _, cmd := range item.Cmds {
 					_, err = db.GetOne(ctx, cmd)
 					if err != nil {
@@ -64,6 +67,20 @@ func (MysqlInspector *mysqlInspector) inspect(ctx context.Context, id int) {
 					g.Log().Infof(gctx.New(), "\t%d. %s 执行失败", i, item.Name)
 					g.Log().Debugf(gctx.New(), "\t%d. %s 执行失败原因=%v", i, item.Name, err)
 					inspection.Availability = false
+				}
+				inspectionDetail := do.InspectionDetail{
+					Name:         item.Name,
+					Success:      err == nil,
+					StartTime:    startTime,
+					EndTime:      gtime.NewFromTime(time.Now()),
+					InspectionId: inspection.Id,
+					ErrMsg:       err,
+				}
+				result, err := dao.InspectionDetail.Ctx(ctx).Data(inspectionDetail).Insert()
+				if err != nil {
+					fmt.Sprintf("insert inspectionDetail failed: %s", err)
+				} else {
+					fmt.Sprintf("insert inspectionDetail successed: %s", result)
 				}
 			}
 			if inspection.Availability {

@@ -9,16 +9,14 @@ import (
 	"github.com/gogf/gf/v2/os/gtime"
 )
 
-// Inspection is the golang structure of table inspection for DAO operations like Where/Data.
-type Inspection struct {
-	g.Meta       `orm:"table:inspection, do:true"`
+// InspectionDetail is the golang structure of table inspection_detail for DAO operations like Where/Data.
+type InspectionDetail struct {
+	g.Meta       `orm:"table:inspection_detail, do:true"`
 	Id           interface{} //
 	Name         interface{} //
-	Count        interface{} //
-	SuccessCount interface{} //
-	FailedCount  interface{} //
-	Connection   interface{} //
-	Availability interface{} //
+	Success      interface{} //
+	ErrMsg       interface{} //
 	StartTime    *gtime.Time //
 	EndTime      *gtime.Time //
+	InspectionId interface{} //
 }

@@ -5,5 +5,5 @@ gfcli:
   gen:
     dao:
     - link:     "sqlite::@file(manifest/document/sqlite/marmot.db)"
-      tables:   "inspection"
+      tables:   "inspection, inspection_detail"
       jsonCase: "CamelLower"

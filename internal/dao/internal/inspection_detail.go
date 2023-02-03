@@ -11,70 +11,66 @@ import (
 	"github.com/gogf/gf/v2/frame/g"
 )
 
-// InspectionDao is the data access object for table inspection.
-type InspectionDao struct {
-	table   string            // table is the underlying table name of the DAO.
-	group   string            // group is the database configuration group name of current DAO.
-	columns InspectionColumns // columns contains all the column names of Table for convenient usage.
+// InspectionDetailDao is the data access object for table inspection_detail.
+type InspectionDetailDao struct {
+	table   string                  // table is the underlying table name of the DAO.
+	group   string                  // group is the database configuration group name of current DAO.
+	columns InspectionDetailColumns // columns contains all the column names of Table for convenient usage.
 }
 
-// InspectionColumns defines and stores column names for table inspection.
-type InspectionColumns struct {
+// InspectionDetailColumns defines and stores column names for table inspection_detail.
+type InspectionDetailColumns struct {
 	Id           string //
 	Name         string //
-	Count        string //
-	SuccessCount string //
-	FailedCount  string //
-	Connection   string //
-	Availability string //
+	Success      string //
+	ErrMsg       string //
 	StartTime    string //
 	EndTime      string //
+	InspectionId string //
 }
 
-// inspectionColumns holds the columns for table inspection.
-var inspectionColumns = InspectionColumns{
+// inspectionDetailColumns holds the columns for table inspection_detail.
+var inspectionDetailColumns = InspectionDetailColumns{
 	Id:           "id",
 	Name:         "name",
-	Count:        "count",
-	SuccessCount: "success_count",
-	FailedCount:  "failed_count",
-	Connection:   "connection",
-	Availability: "availability",
+	Success:      "success",
+	ErrMsg:       "err_msg",
 	StartTime:    "start_time",
 	EndTime:      "end_time",
+	InspectionId: "inspection_id",
 }
 
-// NewInspectionDao creates and returns a new DAO object for table data access.
-func NewInspectionDao() *InspectionDao {
-	return &InspectionDao{
+// NewInspectionDetailDao creates and returns a new DAO object for table data access.
+func NewInspectionDetailDao() *InspectionDetailDao {
+	return &InspectionDetailDao{
 		group:   "default",
-		table:   "inspection",
-		columns: inspectionColumns,
+		table:   "inspection_detail",
+		columns: inspectionDetailColumns,
 	}
 }
 
 // DB retrieves and returns the underlying raw database management object of current DAO.
-func (dao *InspectionDao) DB() gdb.DB {
+func (dao *InspectionDetailDao) DB() gdb.DB {
 	return g.DB(dao.group)
 }
 
 // Table returns the table name of current dao.
-func (dao *InspectionDao) Table() string {
+func (dao *InspectionDetailDao) Table() string {
 	return dao.table
 }
 
 // Columns returns all column names of current dao.
-func (dao *InspectionDao) Columns() InspectionColumns {
+func (dao *InspectionDetailDao) Columns() InspectionDetailColumns {
 	return dao.columns
 }
 
 // Group returns the configuration group name of database of current dao.
-func (dao *InspectionDao) Group() string {
+func (dao *InspectionDetailDao) Group() string {
 	return dao.group
 }
 
 // Ctx creates and returns the Model for current DAO, It automatically sets the context for current operation.
-func (dao *InspectionDao) Ctx(ctx context.Context) *gdb.Model {
+func (dao *InspectionDetailDao) Ctx(ctx context.Context) *gdb.Model {
 	return dao.DB().Model(dao.table).Safe().Ctx(ctx)
 }
 
@@ -84,6 +80,6 @@ func (dao *InspectionDao) Ctx(ctx context.Context) *gdb.Model {
 //
 // Note that, you should not Commit or Rollback the transaction in function f
 // as it is automatically handled by this function.
-func (dao *InspectionDao) Transaction(ctx context.Context, f func(ctx context.Context, tx gdb.TX) error) (err error) {
+func (dao *InspectionDetailDao) Transaction(ctx context.Context, f func(ctx context.Context, tx gdb.TX) error) (err error) {
 	return dao.Ctx(ctx).Transaction(ctx, f)
 }
