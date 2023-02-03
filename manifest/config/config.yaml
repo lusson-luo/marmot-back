@@ -10,6 +10,7 @@ logger:
 database:
   default:
     link:   "sqlite::@file(manifest/document/sqlite/marmot.db)"
+    debug:  true
 
 inspection:
   mysql: 

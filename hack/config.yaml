@@ -2,3 +2,8 @@
 # CLI tool, only in development environment.
 # https://goframe.org/pages/viewpage.action?pageId=3673173
 gfcli:
+  gen:
+    dao:
+    - link:     "sqlite::@file(manifest/document/sqlite/marmot.db)"
+      tables:   "inspection"
+      jsonCase: "CamelLower"

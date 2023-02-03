@@ -3,7 +3,6 @@ package logic
 import (
 	"context"
 	"marmot/internal/dao"
-	"marmot/internal/model/entity"
 	"time"
 
 	"github.com/gogf/gf/v2/database/gdb"
@@ -12,35 +11,33 @@ import (
 	"github.com/gogf/gf/v2/os/gtime"
 )
 
-type mysqlInspector struct {
+// 纯内存模式
+type mysqlMemInspector struct {
 }
 
-var MysqlInspector mysqlInspector = mysqlInspector{}
+var MysqlMemInspector mysqlMemInspector = mysqlMemInspector{}
 
-type MysqlConfig struct {
+type MysqlConfigMem struct {
 	Enabled bool   `json:"enabled"`
 	Url     string `json:"url"`
 	Items   []Item `json:"items"`
 }
 
-type Item struct {
+type ItemMem struct {
 	Name string   `json:"name"`
 	Cmds []string `json:"cmds"`
 }
 
-func (MysqlInspector *mysqlInspector) inspect(ctx context.Context, id int) {
-	if mysqlConfig.Enabled {
-		// inspection, exist := dao.Inspection.FindById(id)
-		inspection := entity.Inspection{}
-		err := dao.Inspection.Ctx(ctx).Where("id", id).Scan(&inspection)
-		if err != nil {
-			g.Log().Errorf(ctx, "err=", err)
-		}
-		if err == nil {
+func (MysqlInspector *mysqlMemInspector) inspect(ctx context.Context, id int) {
+	if mysqlConfigMem.Enabled {
+		inspection, exist := dao.Inspection.FindById(id)
+		// inspection := do.Inspection{}
+		// err:=dao.Inspection.Ctx(ctx).Where("id",id).Scan(&inspection)
+		if exist {
 			var err error
-			g.Log().Infof(gctx.New(), "mysql 开始巡检")
+			g.Log().Infof(gctx.New(), "mysql 执行")
 			db, err := gdb.New(gdb.ConfigNode{
-				Link: mysqlConfig.Url,
+				Link: mysqlConfigMem.Url,
 			})
 			if db.PingMaster() != nil {
 				inspection.Connection = false
@@ -50,7 +47,7 @@ func (MysqlInspector *mysqlInspector) inspect(ctx context.Context, id int) {
 			inspection.StartTime = gtime.NewFromTime(time.Now())
 			inspection.Availability = true
 			inspection.Count++
-			for i, item := range mysqlConfig.Items {
+			for i, item := range mysqlConfigMem.Items {
 				for _, cmd := range item.Cmds {
 					_, err = db.GetOne(ctx, cmd)
 					if err != nil {
@@ -72,17 +69,14 @@ func (MysqlInspector *mysqlInspector) inspect(ctx context.Context, id int) {
 				inspection.FailedCount++
 			}
 			inspection.EndTime = gtime.NewFromTime(time.Now())
-			_, err = dao.Inspection.Ctx(ctx).Data(inspection).Where("id", inspection.Id).Update()
-			if err != nil {
-				g.Log().Errorf(gctx.New(), "mysql 巡检结果保存失败=%v", err)
-			}
+			dao.Inspection.Update(inspection)
 		}
 	}
 }
 
-var mysqlConfig *MysqlConfig = &MysqlConfig{}
+var mysqlConfigMem *MysqlConfigMem = &MysqlConfigMem{}
 
 func init() {
-	g.Cfg().MustGet(gctx.New(), "inspection.mysql").Scan(mysqlConfig)
-	g.Log().Infof(gctx.New(), "mysqlConfig:%v", mysqlConfig)
+	g.Cfg().MustGet(gctx.New(), "inspection.mysql").Scan(mysqlConfigMem)
+	g.Log().Infof(gctx.New(), "mysqlConfig:%v", mysqlConfigMem)
 }

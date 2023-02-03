@@ -1,9 +1,8 @@
 package v1
 
 import (
-	"time"
-
 	"github.com/gogf/gf/v2/frame/g"
+	"github.com/gogf/gf/v2/os/gtime"
 )
 
 type InspectListReq struct {
@@ -12,15 +11,15 @@ type InspectListReq struct {
 
 type InspectListRes struct {
 	g.Meta       `mime:"application/json" example:"string"`
-	Id           int       `json:"id"`
-	Name         string    `json:"name"`
-	Count        int       `json:"count"`
-	SuccessCount int       `json:"successCount"`
-	FailedCount  int       `json:"failedCount"`
-	Connection   bool      `json:"connection"`
-	Availability bool      `json:"availability"`
-	StartTime    time.Time `json:"startTime"`
-	EndTime      time.Time `json:"endTime"`
+	Id           int         `json:"id"`
+	Name         string      `json:"name"`
+	Count        int         `json:"count"`
+	SuccessCount int         `json:"successCount"`
+	FailedCount  int         `json:"failedCount"`
+	Connection   bool        `json:"connection"`
+	Availability bool        `json:"availability"`
+	StartTime    *gtime.Time `json:"startTime"`
+	EndTime      *gtime.Time `json:"endTime"`
 }
 
 type InspectReq struct {
