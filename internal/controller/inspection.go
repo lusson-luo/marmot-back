@@ -38,7 +38,6 @@ func (c CInspection) Inspect(ctx context.Context, req *v1.InspectReq) (res *v1.I
 
 // 3. 巡检全部场景
 func (c CInspection) InspectAll(ctx context.Context, req *v1.InspectAllReq) (res *v1.InspectAllRes, err error) {
-
 	service.Inspection().InspectAll(ctx)
 	return
 }

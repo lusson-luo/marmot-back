@@ -2,35 +2,38 @@ package logic
 
 import (
 	"context"
-	"github.com/gogf/gf/v2/frame/g"
 	v1 "marmot/api/v1"
 	"marmot/internal/dao"
 	"marmot/internal/model/do"
 	"marmot/internal/model/entity"
 	"marmot/internal/service"
+
+	"github.com/gogf/gf/v2/frame/g"
 )
 
 type InspectionLogic struct {
 	// 控制并发，一次只执行1个巡检任务
-	structChan chan struct{}
+	structChan     chan struct{}
+	inspectLoading map[int]bool
 }
 
 // 1. 查看巡检列表
-func (InspectionLogic) List(ctx context.Context) (res *[]v1.InspectListRes, err error) {
+func (l InspectionLogic) List(ctx context.Context) (res *[]v1.InspectListRes, err error) {
 	res = &[]v1.InspectListRes{}
 	var inspections []entity.Inspection
 	dao.Inspection.Ctx(ctx).Scan(&inspections)
 	for _, v := range inspections {
 		inspect := v1.InspectListRes{
-			Id:           v.Id,
-			Name:         v.Name,
-			Count:        v.Count,
-			SuccessCount: v.SuccessCount,
-			FailedCount:  v.FailedCount,
-			Connection:   v.Connection,
-			Availability: v.Availability,
-			StartTime:    v.StartTime,
-			EndTime:      v.EndTime,
+			Id:             v.Id,
+			Name:           v.Name,
+			Count:          v.Count,
+			SuccessCount:   v.SuccessCount,
+			FailedCount:    v.FailedCount,
+			Connection:     v.Connection,
+			Availability:   v.Availability,
+			StartTime:      v.StartTime,
+			EndTime:        v.EndTime,
+			InspectLoading: l.GetInspectLoading(v.Id),
 		}
 		tmp := append(*res, inspect)
 		res = &tmp
@@ -39,10 +42,23 @@ func (InspectionLogic) List(ctx context.Context) (res *[]v1.InspectListRes, err 
 	return
 }
 
+func (l InspectionLogic) GetInspectLoading(id int) bool {
+	if _, ok := l.inspectLoading[id]; ok {
+		return l.inspectLoading[id]
+	}
+	return false
+}
+
+func (l InspectionLogic) setInspectLoading(id int, inspectLoading bool) {
+	l.inspectLoading[id] = inspectLoading
+}
+
 // 2. 巡检单项场景
 func (l InspectionLogic) Inspect(ctx context.Context, id int) {
 	Block(l.structChan)
 	defer UnBlock(l.structChan)
+	l.setInspectLoading(id, true)
+	defer l.setInspectLoading(id, false)
 	inspection := entity.Inspection{}
 	err := dao.Inspection.Ctx(ctx).Where("id", id).Scan(&inspection)
 	if err != nil {
@@ -67,7 +83,7 @@ func UnBlock(structChan chan struct{}) {
 // 3. 巡检全部场景
 func (l InspectionLogic) InspectAll(ctx context.Context) {
 	var inspections []entity.Inspection
-	dao.Inspection.Ctx(ctx).ScanList(&inspections, "inspection")
+	dao.Inspection.Ctx(ctx).Scan(&inspections)
 	for _, inspection := range inspections {
 		l.Inspect(ctx, inspection.Id)
 	}
@@ -108,6 +124,7 @@ func init() {
 	structChan := make(chan struct{}, 1)
 	structChan <- struct{}{}
 	service.RegisterInspection(InspectionLogic{
-		structChan: structChan,
+		structChan:     structChan,
+		inspectLoading: map[int]bool{},
 	})
 }

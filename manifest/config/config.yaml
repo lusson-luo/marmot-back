@@ -20,6 +20,9 @@ inspection:
       - name: 创建数据库
         cmds: 
           - "create database test2"
+      - name: 创建表 test02
+        cmds: 
+          - "CREATE TABLE IF NOT EXISTS `test2.runoob_tbl`(`runoob_id` INT UNSIGNED AUTO_INCREMENT,PRIMARY KEY ( `runoob_id` ))ENGINE=InnoDB DEFAULT CHARSET=utf8;"
       - name: 删除数据库
         cmds: 
           - "drop database test2"

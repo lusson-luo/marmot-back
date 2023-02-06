@@ -10,20 +10,21 @@ type InspectListReq struct {
 }
 
 type InspectListRes struct {
-	g.Meta       `mime:"application/json" example:"string"`
-	Id           int         `json:"id"`
-	Name         string      `json:"name"`
-	Count        int         `json:"count"`
-	SuccessCount int         `json:"successCount"`
-	FailedCount  int         `json:"failedCount"`
-	Connection   bool        `json:"connection"`
-	Availability bool        `json:"availability"`
-	StartTime    *gtime.Time `json:"startTime"`
-	EndTime      *gtime.Time `json:"endTime"`
+	g.Meta         `mime:"application/json" example:"string"`
+	Id             int         `json:"id"`
+	Name           string      `json:"name"`
+	Count          int         `json:"count"`
+	SuccessCount   int         `json:"successCount"`
+	FailedCount    int         `json:"failedCount"`
+	Connection     bool        `json:"connection"`
+	Availability   bool        `json:"availability"`
+	InspectLoading bool        `json:"inspectLoading"`
+	StartTime      *gtime.Time `json:"startTime"`
+	EndTime        *gtime.Time `json:"endTime"`
 }
 
 type InspectReq struct {
-	g.Meta `path:"/api/inspection/inspect" tags:"inspect" method:"get" summary:"巡检结果列表"`
+	g.Meta `path:"/api/inspection/inspect" tags:"inspect" method:"get" summary:"单项巡检"`
 	Id     int `json:"id"`
 }
 
@@ -32,7 +33,7 @@ type InspectRes struct {
 }
 
 type InspectAllReq struct {
-	g.Meta `path:"/api/inspection/inspectAll" tags:"inspect" method:"get" summary:"巡检结果列表"`
+	g.Meta `path:"/api/inspection/inspectAll" tags:"inspect" method:"get" summary:"所有巡检"`
 	Id     int `json:"id"`
 }
 
