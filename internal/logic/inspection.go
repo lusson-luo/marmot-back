@@ -8,11 +8,14 @@ import (
 	"marmot/internal/model/do"
 	"marmot/internal/model/entity"
 	"marmot/internal/service"
+	"time"
 
 	"github.com/gogf/gf/v2/frame/g"
 )
 
 type InspectionLogic struct {
+	// 控制并发，一次只执行1个巡检任务
+	intchan chan int
 }
 
 // 1. 查看巡检列表
@@ -40,7 +43,8 @@ func (InspectionLogic) List(ctx context.Context) (res *[]v1.InspectListRes, err 
 }
 
 // 2. 巡检单项场景
-func (InspectionLogic) Inspect(ctx context.Context, id int) {
+func (l InspectionLogic) Inspect(ctx context.Context, id int) {
+	<-l.intchan
 	inspection := entity.Inspection{}
 	err := dao.Inspection.Ctx(ctx).Where("id", id).Scan(&inspection)
 	if err != nil {
@@ -52,14 +56,16 @@ func (InspectionLogic) Inspect(ctx context.Context, id int) {
 			MysqlInspector.inspect(ctx, id)
 		}
 	}
+	time.Sleep(time.Second * 3)
+	l.intchan <- 1
 }
 
 // 3. 巡检全部场景
-func (logic InspectionLogic) InspectAll(ctx context.Context) {
+func (l InspectionLogic) InspectAll(ctx context.Context) {
 	var inspections []entity.Inspection
 	dao.Inspection.Ctx(ctx).ScanList(&inspections, "inspection")
 	for _, inspection := range inspections {
-		logic.Inspect(ctx, inspection.Id)
+		l.Inspect(ctx, inspection.Id)
 	}
 }
 
@@ -96,5 +102,7 @@ func GetCurrentInspectTaskId(ctx context.Context, inspectId int) int {
 func init() {
 	fmt.Println("注册IInspection")
 	registerInspectors()
-	service.RegisterInspection(InspectionLogic{})
+	service.RegisterInspection(InspectionLogic{
+		intchan: make(chan int, 1),
+	})
 }

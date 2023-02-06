@@ -66,7 +66,6 @@ func (MysqlInspector *mysqlInspector) inspect(ctx context.Context, id int) {
 				if err == nil {
 					g.Log().Infof(gctx.New(), "\t%d. %s 执行成功", i, item.Name)
 				} else {
-
 					g.Log().Infof(gctx.New(), "\t%d. %s 执行失败", i, item.Name)
 					g.Log().Debugf(gctx.New(), "\t%d. %s 执行失败原因=%v", i, item.Name, err)
 					inspection.Availability = false
