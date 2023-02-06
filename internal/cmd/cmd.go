@@ -21,6 +21,7 @@ var (
 				group.Middleware(ghttp.MiddlewareHandlerResponse)
 				group.Bind(
 					controller.Inspection,
+					controller.InspectDetail,
 				)
 			})
 			s.Run()

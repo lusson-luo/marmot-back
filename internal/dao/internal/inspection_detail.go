@@ -20,24 +20,26 @@ type InspectionDetailDao struct {
 
 // InspectionDetailColumns defines and stores column names for table inspection_detail.
 type InspectionDetailColumns struct {
-	Id           string //
-	Name         string //
-	Success      string //
-	ErrMsg       string //
-	StartTime    string //
-	EndTime      string //
-	InspectionId string //
+	Id            string //
+	InspectTaskId string //
+	Name          string //
+	ExecStatus    string //
+	ErrMsg        string //
+	StartTime     string //
+	EndTime       string //
+	InspectionId  string //
 }
 
 // inspectionDetailColumns holds the columns for table inspection_detail.
 var inspectionDetailColumns = InspectionDetailColumns{
-	Id:           "id",
-	Name:         "name",
-	Success:      "success",
-	ErrMsg:       "err_msg",
-	StartTime:    "start_time",
-	EndTime:      "end_time",
-	InspectionId: "inspection_id",
+	Id:            "id",
+	InspectTaskId: "inspect_task_id",
+	Name:          "name",
+	ExecStatus:    "exec_Status",
+	ErrMsg:        "err_msg",
+	StartTime:     "start_time",
+	EndTime:       "end_time",
+	InspectionId:  "inspection_id",
 }
 
 // NewInspectionDetailDao creates and returns a new DAO object for table data access.

@@ -10,11 +10,12 @@ import (
 
 // InspectionDetail is the golang structure for table inspection_detail.
 type InspectionDetail struct {
-	Id           int         `json:"id"           ` //
-	Name         string      `json:"name"         ` //
-	Success      bool        `json:"success"      ` //
-	ErrMsg       string      `json:"errMsg"       ` //
-	StartTime    *gtime.Time `json:"startTime"    ` //
-	EndTime      *gtime.Time `json:"endTime"      ` //
-	InspectionId int         `json:"inspectionId" ` //
+	Id            int         `json:"id"            ` //
+	InspectTaskId int         `json:"inspectTaskId" ` //
+	Name          string      `json:"name"          ` //
+	ExecStatus    bool        `json:"execStatus"    ` //
+	ErrMsg        string      `json:"errMsg"        ` //
+	StartTime     *gtime.Time `json:"startTime"     ` //
+	EndTime       *gtime.Time `json:"endTime"       ` //
+	InspectionId  int         `json:"inspectionId"  ` //
 }

@@ -11,12 +11,13 @@ import (
 
 // InspectionDetail is the golang structure of table inspection_detail for DAO operations like Where/Data.
 type InspectionDetail struct {
-	g.Meta       `orm:"table:inspection_detail, do:true"`
-	Id           interface{} //
-	Name         interface{} //
-	Success      interface{} //
-	ErrMsg       interface{} //
-	StartTime    *gtime.Time //
-	EndTime      *gtime.Time //
-	InspectionId interface{} //
+	g.Meta        `orm:"table:inspection_detail, do:true"`
+	Id            interface{} //
+	InspectTaskId interface{} //
+	Name          interface{} //
+	ExecStatus    interface{} //
+	ErrMsg        interface{} //
+	StartTime     *gtime.Time //
+	EndTime       *gtime.Time //
+	InspectionId  interface{} //
 }

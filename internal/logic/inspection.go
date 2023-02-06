@@ -80,6 +80,19 @@ func registerInspectors() {
 	}
 }
 
+// 查询当前最新的 巡检任务 ID
+func GetCurrentInspectTaskId(ctx context.Context, inspectId int) int {
+	currentInspectTaskId, err := dao.InspectionDetail.Ctx(ctx).Where("inspection_id", inspectId).OrderDesc("inspect_task_id").Limit(1).Value("inspect_task_id")
+	if err != nil {
+		g.Log().Errorf(ctx, "getCurrentInspectTaskId err: %s", err)
+	}
+	if currentInspectTaskId.Int() < 10000 {
+		return 10000
+	} else {
+		return currentInspectTaskId.Int()
+	}
+}
+
 func init() {
 	fmt.Println("注册IInspection")
 	registerInspectors()

@@ -5,21 +5,19 @@ import (
 	"github.com/gogf/gf/v2/os/gtime"
 )
 
-type SingleTaskDetail struct {
-	Id        int         `json:"id"`
-	Name      string      `json:"name"`
-	Success   bool        `json:"success"`
-	Err       string      `json:"err"`
-	StartTime *gtime.Time `json:"startTime"`
-	EndTime   *gtime.Time `json:"endTime"`
-}
-
-type Detail struct {
-	g.Meta `mime:"application/json" example:"string"`
-	detail []SingleTaskDetail `json:"all tasks"`
+type DetailRes struct {
+	g.Meta        `mime:"application/json" example:"string"`
+	Id            int         `json:"id"`
+	InspectTaskId int         `json:"inspectTaskId"`
+	Name          string      `json:"name"`
+	ExecStatus    bool        `json:"execStatus"`
+	ErrMsg        string      `json:"errMsg"`
+	StartTime     *gtime.Time `json:"startTime"`
+	EndTime       *gtime.Time `json:"endTime"`
+	InspectionId  int         `json:"inspectionId" `
 }
 
 type DetailReq struct {
-	g.Meta `path:"/api/inspection/detail" tags:"detail" method:"get" summary:"巡检详情"`
-	Id     int `json:"id"`
+	g.Meta       `path:"/api/inspection/detail" tags:"detail" method:"get" summary:"巡检详情"`
+	InspectionId int `json:"inspectionId"`
 }

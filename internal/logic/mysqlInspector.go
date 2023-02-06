@@ -52,6 +52,9 @@ func (MysqlInspector *mysqlInspector) inspect(ctx context.Context, id int) {
 			inspection.StartTime = gtime.NewFromTime(time.Now())
 			inspection.Availability = true
 			inspection.Count++
+
+			inspectTaskId := GetCurrentInspectTaskId(ctx, inspection.Id)
+
 			for i, item := range mysqlConfig.Items {
 				startTime := gtime.NewFromTime(time.Now())
 				for _, cmd := range item.Cmds {
@@ -69,12 +72,13 @@ func (MysqlInspector *mysqlInspector) inspect(ctx context.Context, id int) {
 					inspection.Availability = false
 				}
 				inspectionDetail := do.InspectionDetail{
-					Name:         item.Name,
-					Success:      err == nil,
-					StartTime:    startTime,
-					EndTime:      gtime.NewFromTime(time.Now()),
-					InspectionId: inspection.Id,
-					ErrMsg:       err,
+					Name:          item.Name,
+					InspectTaskId: inspectTaskId + 1,
+					ExecStatus:    err == nil,
+					ErrMsg:        err,
+					StartTime:     startTime,
+					EndTime:       gtime.NewFromTime(time.Now()),
+					InspectionId:  inspection.Id,
 				}
 				result, err := dao.InspectionDetail.Ctx(ctx).Data(inspectionDetail).Insert()
 				if err != nil {
