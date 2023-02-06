@@ -8,14 +8,13 @@ import (
 	"marmot/internal/model/do"
 	"marmot/internal/model/entity"
 	"marmot/internal/service"
-	"time"
 
 	"github.com/gogf/gf/v2/frame/g"
 )
 
 type InspectionLogic struct {
 	// 控制并发，一次只执行1个巡检任务
-	intchan chan int
+	structChan chan struct{}
 }
 
 // 1. 查看巡检列表
@@ -44,8 +43,8 @@ func (InspectionLogic) List(ctx context.Context) (res *[]v1.InspectListRes, err 
 
 // 2. 巡检单项场景
 func (l InspectionLogic) Inspect(ctx context.Context, id int) {
-	Lock(l.intchan)
-	defer Unlock(l.intchan)
+	Lock(l.structChan)
+	defer Unlock(l.structChan)
 	inspection := entity.Inspection{}
 	err := dao.Inspection.Ctx(ctx).Where("id", id).Scan(&inspection)
 	if err != nil {
@@ -57,15 +56,14 @@ func (l InspectionLogic) Inspect(ctx context.Context, id int) {
 			MysqlInspector.inspect(ctx, id)
 		}
 	}
-	time.Sleep(time.Second * 3)
 }
 
-func Lock(intchan chan int) {
-	<-intchan
+func Lock(structChan chan struct{}) {
+	<-structChan
 }
 
-func Unlock(intchan chan int) {
-	intchan <- 1
+func Unlock(structChan chan struct{}) {
+	structChan <- struct{}{}
 }
 
 // 3. 巡检全部场景
@@ -110,9 +108,9 @@ func GetCurrentInspectTaskId(ctx context.Context, inspectId int) int {
 func init() {
 	fmt.Println("注册IInspection")
 	registerInspectors()
-	intchan := make(chan int, 1)
-	intchan <- 1
+	structChan := make(chan struct{}, 1)
+	structChan <- struct{}{}
 	service.RegisterInspection(InspectionLogic{
-		intchan: intchan,
+		structChan: structChan,
 	})
 }
