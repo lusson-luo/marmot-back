@@ -2,14 +2,12 @@ package logic
 
 import (
 	"context"
-	"fmt"
+	"github.com/gogf/gf/v2/frame/g"
 	v1 "marmot/api/v1"
 	"marmot/internal/dao"
 	"marmot/internal/model/do"
 	"marmot/internal/model/entity"
 	"marmot/internal/service"
-
-	"github.com/gogf/gf/v2/frame/g"
 )
 
 type InspectionLogic struct {
@@ -43,8 +41,8 @@ func (InspectionLogic) List(ctx context.Context) (res *[]v1.InspectListRes, err 
 
 // 2. 巡检单项场景
 func (l InspectionLogic) Inspect(ctx context.Context, id int) {
-	Lock(l.structChan)
-	defer Unlock(l.structChan)
+	Block(l.structChan)
+	defer UnBlock(l.structChan)
 	inspection := entity.Inspection{}
 	err := dao.Inspection.Ctx(ctx).Where("id", id).Scan(&inspection)
 	if err != nil {
@@ -58,11 +56,11 @@ func (l InspectionLogic) Inspect(ctx context.Context, id int) {
 	}
 }
 
-func Lock(structChan chan struct{}) {
+func Block(structChan chan struct{}) {
 	<-structChan
 }
 
-func Unlock(structChan chan struct{}) {
+func UnBlock(structChan chan struct{}) {
 	structChan <- struct{}{}
 }
 
@@ -92,7 +90,7 @@ func registerInspectors() {
 	}
 }
 
-// 查询当前最新的 巡检任务 ID
+// GetCurrentInspectTaskId 查询当前最新的 巡检任务 ID
 func GetCurrentInspectTaskId(ctx context.Context, inspectId int) int {
 	currentInspectTaskId, err := dao.InspectionDetail.Ctx(ctx).Where("inspection_id", inspectId).OrderDesc("inspect_task_id").Limit(1).Value("inspect_task_id")
 	if err != nil {
@@ -106,7 +104,6 @@ func GetCurrentInspectTaskId(ctx context.Context, inspectId int) int {
 }
 
 func init() {
-	fmt.Println("注册IInspection")
 	registerInspectors()
 	structChan := make(chan struct{}, 1)
 	structChan <- struct{}{}
