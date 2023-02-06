@@ -7,6 +7,7 @@ import (
 	"marmot/internal/model/entity"
 	"time"
 
+	"github.com/fatih/color"
 	"github.com/gogf/gf/v2/database/gdb"
 	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/os/gctx"
@@ -63,9 +64,9 @@ func (MysqlInspector *mysqlInspector) inspect(ctx context.Context, id int) {
 					}
 				}
 				if err == nil {
-					g.Log().Infof(ctx, "\t%d. %s 执行成功", i, item.Name)
+					g.Log().Infof(ctx, color.GreenString("\t%d. %s 执行成功"), i, item.Name)
 				} else {
-					g.Log().Infof(ctx, "\t%d. %s 执行失败", i, item.Name)
+					g.Log().Infof(ctx, color.RedString("\t%d. %s 执行失败"), i, item.Name)
 					g.Log().Debugf(ctx, "\t%d. %s 执行失败原因=%v", i, item.Name, err)
 					inspection.Availability = false
 				}
