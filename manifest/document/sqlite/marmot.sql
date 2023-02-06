@@ -11,3 +11,16 @@ CREATE TABLE inspection(
     start_time datetime(0) NULL DEFAULT NULL, --  '巡检开始时间',
     end_time datetime(0) NULL DEFAULT NULL --  '巡检结束时间'
 );
+
+DROP TABLE IF EXISTS inspection_detail;
+CREATE TABLE inspection_detail(
+    -- 栏目列表
+    id INTEGER PRIMARY KEY AUTOINCREMENT,  -- '自增ID'
+    inspect_task_id INTEGER NOT NULL DEFAULT 10000, -- '巡检任务 ID'
+    name varchar(255)  NOT NULL, --  ' task 名称',
+    exec_Status bool NOT NULL DEFAULT false, -- ' task 执行状况'
+    err_msg TINYTEXT DEFAULT NULL, -- ' 错误信息 ',
+    start_time datetime(0) NULL DEFAULT NULL, --  '巡检开始时间',
+    end_time datetime(0) NULL DEFAULT NULL, --  '巡检结束时间',
+    inspection_id INTEGER NOT NULL -- '巡检 id'
+);

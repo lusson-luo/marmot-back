@@ -12,13 +12,13 @@ import (
 // Inspection is the golang structure of table inspection for DAO operations like Where/Data.
 type Inspection struct {
 	g.Meta       `orm:"table:inspection, do:true"`
-	Id           interface{}       `json:"id"`
-	Name         interface{}    `json:"name"`
-	Count        interface{}       `json:"count"`
-	SuccessCount interface{}       `json:"successCount"`
-	FailedCount  interface{}       `json:"failedCount"`
-	Connection   interface{}      `json:"connection"`
-	Availability interface{}      `json:"availability"`
+	Id           interface{} //
+	Name         interface{} //
+	Count        interface{} //
+	SuccessCount interface{} //
+	FailedCount  interface{} //
+	Connection   interface{} //
+	Availability interface{} //
 	StartTime    *gtime.Time //
 	EndTime      *gtime.Time //
 }
