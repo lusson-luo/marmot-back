@@ -81,11 +81,10 @@ func UnBlock(structChan chan struct{}) {
 }
 
 // 2. 巡检指定场景
-// 如果没有传场景id，巡检所有场景
 func (l InspectionLogic) InspectSelection(ctx context.Context, ids []int) {
 	var inspections []entity.Inspection
 	if len(ids) == 0 {
-		dao.Inspection.Ctx(ctx).Scan(&inspections)
+		return
 	} else {
 		var idwheres []interface{} = make([]interface{}, 0)
 		for _, id := range ids {

@@ -18,7 +18,6 @@ func (c CInspection) List(ctx context.Context, req *v1.InspectListReq) (res *[]v
 }
 
 // 2. 巡检选定场景
-// 如果没有传场景id，巡检所有场景
 func (c CInspection) InspectSelection(ctx context.Context, req *v1.InspectSelectionReq) (res *v1.InspectSelectionRes, err error) {
 	service.Inspection().InspectSelection(ctx, req.Ids)
 	return
