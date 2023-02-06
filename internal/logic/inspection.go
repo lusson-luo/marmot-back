@@ -53,8 +53,8 @@ func (l InspectionLogic) setInspectLoading(id int, inspectLoading bool) {
 	l.inspectLoading[id] = inspectLoading
 }
 
-// 2. 巡检单项场景
-func (l InspectionLogic) Inspect(ctx context.Context, id int) {
+// 巡检单项场景
+func (l InspectionLogic) inspect(ctx context.Context, id int) {
 	Block(l.structChan)
 	defer UnBlock(l.structChan)
 	l.setInspectLoading(id, true)
@@ -80,12 +80,21 @@ func UnBlock(structChan chan struct{}) {
 	structChan <- struct{}{}
 }
 
-// 3. 巡检全部场景
-func (l InspectionLogic) InspectAll(ctx context.Context) {
+// 2. 巡检指定场景
+// 如果没有传场景id，巡检所有场景
+func (l InspectionLogic) InspectSelection(ctx context.Context, ids []int) {
 	var inspections []entity.Inspection
-	dao.Inspection.Ctx(ctx).Scan(&inspections)
+	if len(ids) == 0 {
+		dao.Inspection.Ctx(ctx).Scan(&inspections)
+	} else {
+		var idwheres []interface{} = make([]interface{}, 0)
+		for _, id := range ids {
+			idwheres = append(idwheres, id)
+		}
+		dao.Inspection.Ctx(ctx).WhereIn("id", idwheres).Scan(&inspections)
+	}
 	for _, inspection := range inspections {
-		l.Inspect(ctx, inspection.Id)
+		l.inspect(ctx, inspection.Id)
 	}
 }
 

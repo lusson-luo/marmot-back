@@ -23,20 +23,11 @@ type InspectListRes struct {
 	EndTime        *gtime.Time `json:"endTime"`
 }
 
-type InspectReq struct {
-	g.Meta `path:"/api/inspection/inspect" tags:"inspect" method:"get" summary:"单项巡检"`
-	Id     int `json:"id"`
+type InspectSelectionReq struct {
+	g.Meta `path:"/api/inspection/inspectSelection" tags:"inspectSelection" method:"get" summary:"指定巡检"`
+	Ids    []int `json:"ids"`
 }
 
-type InspectRes struct {
-	g.Meta `mime:"application/json" example:"string"`
-}
-
-type InspectAllReq struct {
-	g.Meta `path:"/api/inspection/inspectAll" tags:"inspect" method:"get" summary:"所有巡检"`
-	Id     int `json:"id"`
-}
-
-type InspectAllRes struct {
+type InspectSelectionRes struct {
 	g.Meta `mime:"application/json" example:"string"`
 }

@@ -17,10 +17,8 @@ func Inspection() IInspection {
 type IInspection interface {
 	// 1. 查看巡检列表
 	List(ctx context.Context) (*[]v1.InspectListRes, error)
-	// 2. 巡检单项场景
-	Inspect(ctx context.Context, id int)
-	// 3. 巡检全部场景
-	InspectAll(ctx context.Context)
+	// 2. 巡检指定场景
+	InspectSelection(ctx context.Context, ids []int)
 }
 
 func RegisterInspection(i IInspection) {
