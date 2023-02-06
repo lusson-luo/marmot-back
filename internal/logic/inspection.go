@@ -44,7 +44,8 @@ func (InspectionLogic) List(ctx context.Context) (res *[]v1.InspectListRes, err 
 
 // 2. 巡检单项场景
 func (l InspectionLogic) Inspect(ctx context.Context, id int) {
-	<-l.intchan
+	Lock(l.intchan)
+	defer Unlock(l.intchan)
 	inspection := entity.Inspection{}
 	err := dao.Inspection.Ctx(ctx).Where("id", id).Scan(&inspection)
 	if err != nil {
@@ -57,7 +58,14 @@ func (l InspectionLogic) Inspect(ctx context.Context, id int) {
 		}
 	}
 	time.Sleep(time.Second * 3)
-	l.intchan <- 1
+}
+
+func Lock(intchan chan int) {
+	<-intchan
+}
+
+func Unlock(intchan chan int) {
+	intchan <- 1
 }
 
 // 3. 巡检全部场景
@@ -102,7 +110,9 @@ func GetCurrentInspectTaskId(ctx context.Context, inspectId int) int {
 func init() {
 	fmt.Println("注册IInspection")
 	registerInspectors()
+	intchan := make(chan int, 1)
+	intchan <- 1
 	service.RegisterInspection(InspectionLogic{
-		intchan: make(chan int, 1),
+		intchan: intchan,
 	})
 }

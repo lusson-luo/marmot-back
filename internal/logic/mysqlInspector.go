@@ -2,7 +2,6 @@ package logic
 
 import (
 	"context"
-	"fmt"
 	"marmot/internal/dao"
 	"marmot/internal/model/do"
 	"marmot/internal/model/entity"
@@ -64,10 +63,10 @@ func (MysqlInspector *mysqlInspector) inspect(ctx context.Context, id int) {
 					}
 				}
 				if err == nil {
-					g.Log().Infof(gctx.New(), "\t%d. %s 执行成功", i, item.Name)
+					g.Log().Infof(ctx, "\t%d. %s 执行成功", i, item.Name)
 				} else {
-					g.Log().Infof(gctx.New(), "\t%d. %s 执行失败", i, item.Name)
-					g.Log().Debugf(gctx.New(), "\t%d. %s 执行失败原因=%v", i, item.Name, err)
+					g.Log().Infof(ctx, "\t%d. %s 执行失败", i, item.Name)
+					g.Log().Debugf(ctx, "\t%d. %s 执行失败原因=%v", i, item.Name, err)
 					inspection.Availability = false
 				}
 				inspectionDetail := do.InspectionDetail{
@@ -79,11 +78,9 @@ func (MysqlInspector *mysqlInspector) inspect(ctx context.Context, id int) {
 					EndTime:       gtime.NewFromTime(time.Now()),
 					InspectionId:  inspection.Id,
 				}
-				result, err := dao.InspectionDetail.Ctx(ctx).Data(inspectionDetail).Insert()
+				_, err := dao.InspectionDetail.Ctx(ctx).Data(inspectionDetail).Insert()
 				if err != nil {
-					fmt.Sprintf("insert inspectionDetail failed: %s", err)
-				} else {
-					fmt.Sprintf("insert inspectionDetail successed: %s", result)
+					g.Log().Errorf(ctx, "insert inspectionDetail failed: %s", err)
 				}
 			}
 			if inspection.Availability {
