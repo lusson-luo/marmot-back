@@ -49,6 +49,6 @@ func (s *lUser) IsSignedIn(ctx context.Context, r *ghttp.Request) bool {
 	if token == "" {
 		return false
 	}
-	valid := Ljwt.Valid(r.Context(), token)
+	valid := MyJwt.Valid(r.Context(), token)
 	return valid
 }

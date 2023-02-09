@@ -17,11 +17,11 @@ func (C Clogin) Login(ctx context.Context, req *v1.LoginReq) (res *v1.LoginRes, 
 	if err != nil {
 		return
 	}
-	tokenstring, err := logic.Ljwt.GenerateToken(ctx, req.Username)
+	tokenString, err := logic.MyJwt.GenerateToken(ctx, req.Username)
 	if err != nil {
 		return
 	}
-	res.Token = tokenstring
+	res.Token = tokenString
 	res.Role = role
 	return
 }

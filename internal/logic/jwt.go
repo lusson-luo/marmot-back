@@ -16,8 +16,8 @@ const (
 )
 
 var (
-	Ljwt      lJwt   = lJwt{}
-	JwtSecert []byte = []byte("123456")
+	MyJwt     lJwt   = lJwt{}
+	JwtSecret []byte = []byte("123456")
 )
 
 type MyClaims struct {
@@ -25,7 +25,7 @@ type MyClaims struct {
 	jwt.StandardClaims
 }
 
-// 生成 jwt 格式 token
+// GenerateToken 生成 jwt 格式 token
 func (lJwt) GenerateToken(ctx context.Context, username string) (tokenString string, err error) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, MyClaims{
 		Username: username,
@@ -34,15 +34,15 @@ func (lJwt) GenerateToken(ctx context.Context, username string) (tokenString str
 		},
 	})
 	g.Log().Debugf(ctx, "", token)
-	tokenString, err = token.SignedString(JwtSecert)
+	tokenString, err = token.SignedString(JwtSecret)
 	return
 }
 
-// 验证 token 是否合法
+// Valid 验证 token 是否合法
 func (lJwt) Valid(ctx context.Context, token string) (valided bool) {
 	claims := &MyClaims{}
 	tkn, err := jwt.ParseWithClaims(token, claims, func(token *jwt.Token) (interface{}, error) {
-		return JwtSecert, nil
+		return JwtSecret, nil
 	})
 	if err != nil {
 		valided = false
