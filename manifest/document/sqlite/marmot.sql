@@ -24,3 +24,17 @@ CREATE TABLE inspection_detail(
     end_time datetime(0) NULL DEFAULT NULL, --  '巡检结束时间',
     inspection_id INTEGER NOT NULL -- '巡检 id'
 );
+
+DROP TABLE IF EXISTS user;
+CREATE TABLE user(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,  -- '自增ID'
+    passport  varchar(45) NOT NULL unique, --  'User Passport'
+    password  varchar(45) NOT NULL, --  'User Password'
+    nickname  varchar(45) NOT NULL, --  'User Nickname'
+    role varchar(45) NOT NULL, --  'User Role, admin/user'
+    create_at datetime(0) DEFAULT NULL, --  'Created Time'
+    update_at datetime(0) DEFAULT NULL --  'Updated Time'
+);
+
+insert into user(passport,password,nickname,role) values("admin","admin","管理员","admin");
+insert into user(passport,password,nickname,role) values("user","user","用户","user");

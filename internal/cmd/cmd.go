@@ -8,6 +8,7 @@ import (
 	"github.com/gogf/gf/v2/os/gcmd"
 
 	"marmot/internal/controller"
+	"marmot/internal/middleware"
 )
 
 var (
@@ -17,12 +18,21 @@ var (
 		Brief: "start http server",
 		Func: func(ctx context.Context, parser *gcmd.Parser) (err error) {
 			s := g.Server()
+			s.Use(ghttp.MiddlewareHandlerResponse)
 			s.Group("/", func(group *ghttp.RouterGroup) {
-				group.Middleware(ghttp.MiddlewareHandlerResponse)
-				group.Bind(
-					controller.Inspection,
-					controller.InspectDetail,
+				group.Middleware(
+					middleware.Ctx,
 				)
+				group.Bind(
+					controller.Login,
+				)
+				group.Group("/", func(group *ghttp.RouterGroup) {
+					group.Middleware(middleware.Auth)
+					group.Bind(
+						controller.Inspection,
+						controller.InspectDetail,
+					)
+				})
 			})
 			s.Run()
 			return nil
