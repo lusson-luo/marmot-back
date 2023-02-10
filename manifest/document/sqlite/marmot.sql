@@ -1,5 +1,5 @@
-DROP TABLE IF EXISTS inspection;
-CREATE TABLE inspection(
+-- DROP TABLE IF EXISTS inspection;
+CREATE TABLE IF NOT EXISTS inspection(
     -- 栏目列表
     id INTEGER PRIMARY KEY AUTOINCREMENT,  -- '自增ID'
     name varchar(255)  NOT NULL, --  '巡检name: mysql 等',
@@ -12,8 +12,8 @@ CREATE TABLE inspection(
     end_time datetime(0) NULL DEFAULT NULL --  '巡检结束时间'
 );
 
-DROP TABLE IF EXISTS inspection_detail;
-CREATE TABLE inspection_detail(
+-- DROP TABLE IF EXISTS inspection_detail;
+CREATE TABLE IF NOT EXISTS inspection_detail(
     -- 栏目列表
     id INTEGER PRIMARY KEY AUTOINCREMENT,  -- '自增ID'
     inspect_task_id INTEGER NOT NULL DEFAULT 10000, -- '巡检任务 ID'
@@ -25,8 +25,8 @@ CREATE TABLE inspection_detail(
     inspection_id INTEGER NOT NULL -- '巡检 id'
 );
 
-DROP TABLE IF EXISTS user;
-CREATE TABLE user(
+-- DROP TABLE IF EXISTS user;
+CREATE TABLE IF NOT EXISTS user(
     id INTEGER PRIMARY KEY AUTOINCREMENT,  -- '自增ID'
     passport  varchar(45) NOT NULL unique, --  'User Passport'
     password  varchar(45) NOT NULL, --  'User Password'
@@ -35,6 +35,3 @@ CREATE TABLE user(
     create_at datetime(0) DEFAULT NULL, --  'Created Time'
     update_at datetime(0) DEFAULT NULL --  'Updated Time'
 );
-
-insert into user(passport,password,nickname,role) values("admin","admin","管理员","admin");
-insert into user(passport,password,nickname,role) values("user","user","用户","user");

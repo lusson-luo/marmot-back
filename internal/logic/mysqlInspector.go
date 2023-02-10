@@ -32,7 +32,6 @@ type Item struct {
 
 func (MysqlInspector *mysqlInspector) inspect(ctx context.Context, id int) {
 	if mysqlConfig.Enabled {
-		// inspection, exist := dao.Inspection.FindById(id)
 		inspection := entity.Inspection{}
 		err := dao.Inspection.Ctx(ctx).Where("id", id).Scan(&inspection)
 		if err != nil {
@@ -52,9 +51,7 @@ func (MysqlInspector *mysqlInspector) inspect(ctx context.Context, id int) {
 			inspection.StartTime = gtime.NewFromTime(time.Now())
 			inspection.Availability = true
 			inspection.Count++
-
 			inspectTaskId := GetCurrentInspectTaskId(ctx, inspection.Id)
-
 			for i, item := range mysqlConfig.Items {
 				startTime := gtime.NewFromTime(time.Now())
 				for _, cmd := range item.Cmds {
@@ -102,5 +99,5 @@ var mysqlConfig *MysqlConfig = &MysqlConfig{}
 
 func init() {
 	g.Cfg().MustGet(gctx.New(), "inspection.mysql").Scan(mysqlConfig)
-	g.Log().Infof(gctx.New(), "mysqlConfig:%v", mysqlConfig)
+	g.Log().Debugf(gctx.New(), "mysqlConfig:%v", mysqlConfig)
 }

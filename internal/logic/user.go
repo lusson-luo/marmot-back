@@ -3,12 +3,18 @@ package logic
 import (
 	"context"
 	"errors"
+	"fmt"
 	"marmot/internal/dao"
 	"marmot/internal/model/do"
 	"marmot/internal/model/entity"
 	"strings"
 
+	"crypto/sha256"
+
+	"github.com/fatih/color"
+	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/net/ghttp"
+	"github.com/gogf/gf/v2/os/gctx"
 )
 
 type lUser struct {
@@ -72,4 +78,36 @@ func (*lUser) getToken(r *ghttp.Request) (string, bool) {
 		return "", false
 	}
 	return token, true
+}
+
+type AdminInfo struct {
+	Username string `json:"username"`
+	Password string `json:"password"`
+}
+
+func (*lUser) MarshalAdminToDb(ctx context.Context) {
+	admin := &AdminInfo{}
+	g.Cfg().MustGet(ctx, "admin").Scan(admin)
+	g.Log().Debugf(ctx, color.RedString("====%v"), admin)
+	var user *entity.User
+	err := dao.User.Ctx(ctx).Where(do.User{
+		Passport: admin.Username,
+	}).Scan(&user)
+	if err != nil {
+		g.Log().Infof(ctx, color.RedString("err=%v, dao.User=%v"), err, user)
+		panic("查询用户表失败，是否没有连接正确的数据库")
+	}
+	if user == nil {
+		dao.User.Ctx(ctx).Insert(do.User{
+			Passport: admin.Username,
+			Password: fmt.Sprintf("%x", sha256.Sum256([]byte(admin.Password))),
+			Nickname: admin.Username,
+			Role:     "admin",
+		})
+	}
+}
+
+func init() {
+	ctx := gctx.New()
+	User.MarshalAdminToDb(ctx)
 }

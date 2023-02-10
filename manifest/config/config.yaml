@@ -7,6 +7,12 @@ logger:
   level : "all"
   stdout: true
 
+admin:
+  username: "admin"
+  password: "admin"
+
+initSql: "manifest/document/sqlite/marmot.sql"
+
 database:
   default:
     link:   "sqlite::@file(manifest/document/sqlite/marmot.db)"
