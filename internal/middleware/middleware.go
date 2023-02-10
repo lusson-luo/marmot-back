@@ -14,14 +14,14 @@ type MyClaims struct {
 	jwt.StandardClaims
 }
 
-// Ctx 设置 cookie
-func Ctx(r *ghttp.Request) {
+// 解析 Jwt 的信息存入 Ctx 中
+func ParseJwtToCtx(r *ghttp.Request) {
 	_, username := logic.User.Parse(r.GetCtx(), r)
-	r.SetCtxVar(logic.BizCtxKey, logic.Ctx.Init(r.GetCtx(), username))
+	logic.Ctx.Set(r, username)
 	r.Middleware.Next()
 }
 
-// Auth 查看是否登录
+// 检测登录 token 是否合法
 func Auth(r *ghttp.Request) {
 	valid := logic.User.IsSignedIn(r.GetCtx(), r)
 	if !valid {

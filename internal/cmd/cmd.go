@@ -21,7 +21,7 @@ var (
 			s.Use(ghttp.MiddlewareHandlerResponse)
 			s.Group("/", func(group *ghttp.RouterGroup) {
 				group.Middleware(
-					middleware.Ctx,
+					middleware.ParseJwtToCtx,
 				)
 				group.Bind(
 					controller.User,
