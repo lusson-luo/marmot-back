@@ -16,9 +16,8 @@ type MyClaims struct {
 
 // Ctx 设置 cookie
 func Ctx(r *ghttp.Request) {
-	r.SetCtxVar(logic.BizCtxKey, logic.BizCtx{
-		Cookie: r.Cookie,
-	})
+	_, username := logic.User.Parse(r.GetCtx(), r)
+	r.SetCtxVar(logic.BizCtxKey, logic.Ctx.Init(r.GetCtx(), username))
 	r.Middleware.Next()
 }
 

@@ -31,24 +31,45 @@ func (s *lUser) Login(ctx context.Context, username string, password string) (st
 		return "", errors.New("账户或者密码错误")
 	}
 	return user.Role, nil
-
 }
 
-// IsSignedIn checks and returns whether current user is already signed-in.
+// 查看是否登录
 func (s *lUser) IsSignedIn(ctx context.Context, r *ghttp.Request) bool {
-	header := r.GetHeader("Authorization")
-	headerList := strings.Split(header, " ")
-	if len(headerList) != 2 {
-		return false
-	}
-	t := headerList[0]
-	token := headerList[1]
-	if t != "Bearer" {
-		return false
-	}
-	if token == "" {
+	token, exist := s.getToken(r)
+	if !exist {
 		return false
 	}
 	valid := MyJwt.Valid(r.Context(), token)
 	return valid
+}
+
+// 解析 token
+func (s *lUser) Parse(ctx context.Context, r *ghttp.Request) (bool, string) {
+	token, exist := s.getToken(r)
+	if !exist {
+		return false, ""
+	}
+	claims, ok := MyJwt.Parse(r.Context(), token)
+	if !ok {
+		return false, ""
+	}
+	return ok, claims.Username
+}
+
+// 从 request 的 head 中获得 token string
+func (*lUser) getToken(r *ghttp.Request) (string, bool) {
+	header := r.GetHeader("Authorization")
+	headerList := strings.Split(header, " ")
+	if len(headerList) != 2 {
+		return "", false
+	}
+	t := headerList[0]
+	token := headerList[1]
+	if t != "Bearer" {
+		return "", false
+	}
+	if token == "" {
+		return "", false
+	}
+	return token, true
 }

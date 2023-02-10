@@ -16,3 +16,13 @@ type LoginRes struct {
 	// user or admin
 	Role string `json:"role"`
 }
+
+type RefreshReq struct {
+	g.Meta `path:"/api/user/refresh" tags:"refresh" method:"POST" summary:"刷新凭证"`
+}
+
+type RefreshRes struct {
+	g.Meta `mime:"application/json" example:"string"`
+	Token  string `json:"token"`
+	Role   string `json:"role" summary:"user or admin"`
+}

@@ -24,7 +24,7 @@ var (
 					middleware.Ctx,
 				)
 				group.Bind(
-					controller.Login,
+					controller.User,
 				)
 				group.Group("/", func(group *ghttp.RouterGroup) {
 					group.Middleware(middleware.Auth)
