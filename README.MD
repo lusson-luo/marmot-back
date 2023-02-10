@@ -1,9 +1,21 @@
-# GoFrame Template For SingleRepo
+# 土拨鼠PaaS巡检平台
 
-Project Makefile Commands: 
-- `make cli`: Install or Update to the latest GoFrame CLI tool.
-- `make dao`: Generate go files for `Entity/DAO/DO` according to the configuration file from `hack` folder.
-- `make service`: Parse `logic` folder to generate interface go files into `service` folder.
-- `make image TAG=xxx`: Run `docker build` to build image according `manifest/docker`.
-- `make image.push TAG=xxx`: Run `docker build` and `docker push` to build and push image according `manifest/docker`.
-- `make deploy TAG=xxx`: Run `kustomize build` to build and deploy deployment to kubernetes server group according `manifest/deploy`.
+## 一、如何启动
+
+1. 启动后端
+
+`go run main.go`
+
+2. 启动前端
+
+```
+cd ..
+git clone https://github.com/lusson-luo/marmot-front.git
+yarn run dev
+```
+
+3. 访问
+
+http://localhost:5173/
+账户: admin
+密码: admin
