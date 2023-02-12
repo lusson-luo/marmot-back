@@ -24,19 +24,27 @@ var (
 	User = lUser{}
 )
 
-func (s *lUser) Login(ctx context.Context, username string, password string) (string, error) {
+// 登录
+func (s *lUser) Login(ctx context.Context, username string, password string) (role string, token string, err error) {
+	// 查询用户信息
 	var user *entity.User
-	err := dao.User.Ctx(ctx).Where(do.User{
+	err = dao.User.Ctx(ctx).Where(do.User{
 		Passport: username,
 		Password: password,
 	}).Scan(&user)
 	if err != nil {
-		return "", err
+		return
 	}
 	if user == nil {
-		return "", errors.New("账户或者密码错误")
+		err = errors.New("账户或密码错误")
+		return
 	}
-	return user.Role, nil
+	// 生成 jwt token
+	token, err = MyJwt.GenerateToken(ctx, username)
+	if err != nil {
+		return
+	}
+	return
 }
 
 // 查看是否登录
