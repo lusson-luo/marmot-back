@@ -24,11 +24,12 @@ var (
 					middleware.ParseJwtToCtx,
 				)
 				group.Bind(
-					controller.User,
+					controller.Login,
 				)
 				group.Group("/", func(group *ghttp.RouterGroup) {
 					group.Middleware(middleware.Auth)
 					group.Bind(
+						controller.User,
 						controller.Inspection,
 						controller.InspectDetail,
 					)

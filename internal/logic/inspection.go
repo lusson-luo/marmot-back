@@ -97,6 +97,19 @@ func (l InspectionLogic) InspectSelection(ctx context.Context, ids []int) {
 	}
 }
 
+// GetCurrentInspectTaskId 查询当前最新的 巡检任务 ID
+func GetCurrentInspectTaskId(ctx context.Context, inspectId int) int {
+	currentInspectTaskId, err := dao.InspectionDetail.Ctx(ctx).Where("inspection_id", inspectId).OrderDesc("inspect_task_id").Limit(1).Value("inspect_task_id")
+	if err != nil {
+		g.Log().Errorf(ctx, "getCurrentInspectTaskId err: %s", err)
+	}
+	if currentInspectTaskId.Int() < 10000 {
+		return 10000
+	} else {
+		return currentInspectTaskId.Int()
+	}
+}
+
 // 4. 加载所有巡检处理器到数据库
 func registerInspectors() {
 	var inspections []entity.Inspection
@@ -111,19 +124,6 @@ func registerInspectors() {
 	}
 	if !mysqlExist {
 		dao.Inspection.Ctx(ctx).Data(do.Inspection{Name: "mysql"}).Insert()
-	}
-}
-
-// GetCurrentInspectTaskId 查询当前最新的 巡检任务 ID
-func GetCurrentInspectTaskId(ctx context.Context, inspectId int) int {
-	currentInspectTaskId, err := dao.InspectionDetail.Ctx(ctx).Where("inspection_id", inspectId).OrderDesc("inspect_task_id").Limit(1).Value("inspect_task_id")
-	if err != nil {
-		g.Log().Errorf(ctx, "getCurrentInspectTaskId err: %s", err)
-	}
-	if currentInspectTaskId.Int() < 10000 {
-		return 10000
-	} else {
-		return currentInspectTaskId.Int()
 	}
 }
 
