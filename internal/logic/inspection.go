@@ -53,7 +53,7 @@ func (l InspectionLogic) setInspectLoading(id int, inspectLoading bool) {
 	l.inspectLoading[id] = inspectLoading
 }
 
-// 巡检单项场景
+// 场景巡检
 func (l InspectionLogic) inspect(ctx context.Context, id int) {
 	Block(l.structChan)
 	defer UnBlock(l.structChan)

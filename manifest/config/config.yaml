@@ -1,29 +1,40 @@
+# 服务基本配置
 server:
+  # 启动端口
   address:     ":8000"
   openapiPath: "/api.json"
   swaggerPath: "/swagger"
 
 logger:
+  # 日志级别
   level : "all"
   stdout: true
 
+# 登录管理员账号和密码
 admin:
   username: "admin"
   password: "admin"
 
+# Db 建表 sql 文件
 initSql: "manifest/document/sqlite/marmot.sql"
 
+# 巡检结果存储数据库
 database:
   default:
     link:   "sqlite::@file(manifest/document/sqlite/marmot.db)"
     debug:  true
 
+# 巡检任务配置
 inspection:
+  # mysql 巡检配置
   mysql: 
     enabled: true
     url: "mysql:root:coding123@tcp(127.0.0.1:3306)"
+    # 巡检项可自定义添加
     items:
+        # 页面展示巡检步骤
       - name: 创建数据库
+        # 执行命令
         cmds: 
           - "create database test2"
       - name: 创建表 test02
